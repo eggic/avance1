@@ -3,13 +3,15 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use App\Models\Pedido;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
-    public function register(): void
+    public function register()
     {
         //
     }
@@ -17,8 +19,14 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot()
     {
-        //
+        View::composer('layouts.navbar', function ($view) {
+            $pedido = null;
+            if (auth()->check()) {
+                $pedido = Pedido::where('usuario_id', auth()->id())->latest()->first();
+            }
+            $view->with('pedido', $pedido);
+        });
     }
 }

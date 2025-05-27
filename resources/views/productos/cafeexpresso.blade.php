@@ -25,11 +25,17 @@
                         <p class="card-text">{{ $producto->descripcion }}</p>
                         <p><strong>Precio por unidad:</strong> ${{ number_format($producto->precio, 2) }}</p>
 
-                        <div class="d-flex justify-content-center align-items-center gap-2">
-                            <button class="btn btn-outline-secondary" onclick="cambiarCantidad({{ $loop->index }}, -1)">-</button>
-                            <span id="cantidad-{{ $loop->index }}">0</span>
-                            <button class="btn btn-outline-secondary" onclick="cambiarCantidad({{ $loop->index }}, 1)">+</button>
-                        </div>
+                        <form action="{{ route('carrito.agregar') }}" method="POST" class="d-flex flex-column align-items-center gap-2">
+                            @csrf
+                            <input type="hidden" name="producto_id" value="{{ $producto->id }}">
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-secondary" onclick="cambiarCantidad({{ $loop->index }}, -1)">-</button>
+                                <span id="cantidad-{{ $loop->index }}">1</span>
+                                <button type="button" class="btn btn-outline-secondary" onclick="cambiarCantidad({{ $loop->index }}, 1)">+</button>
+                            </div>
+                            <input type="hidden" name="cantidad" id="input-cantidad-{{ $loop->index }}" value="1">
+                            <button type="submit" class="btn btn-primary mt-2">Agregar al carrito</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -39,16 +45,21 @@
         </div>
 
         <div class="text-center mt-5">
-            <button class="btn btn-success px-5 py-2">Hacer pedido</button>
+            <a href="{{ route('carrito.index') }}" class="btn btn-success px-5 py-2">Hacer pedido</a>
         </div>
     </div>
 
     <script>
         function cambiarCantidad(index, cambio) {
             const cantidadSpan = document.getElementById('cantidad-' + index);
+            const inputCantidad = document.getElementById('input-cantidad-' + index);
+
             let cantidad = parseInt(cantidadSpan.textContent);
-            cantidad = Math.max(0, cantidad + cambio);
+            cantidad += cambio;
+            if (cantidad < 1) cantidad = 1;
+
             cantidadSpan.textContent = cantidad;
+            inputCantidad.value = cantidad;
         }
     </script>
 

@@ -3,18 +3,44 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReciboMail;
 use App\Models\Producto;
-
 
 class PedidoController extends Controller
 {
-    // Muestra la vista para ordenar comida
+    public function ver()
+    {
+        return view('pedido.ver');
+    }
+
+    public function realizarPedido(Request $request)
+    {
+        // lógica para procesar pedido
+    }
+
     public function ordenar()
     {
         return view('orden');
     }
 
-    // Almacena el pedido en la sesión
+    public function detalles()
+    {
+        $carrito = session('carrito', []);
+
+        $total = 0;
+        foreach ($carrito as $item) {
+            $precio = $item['precio'] ?? 0;
+            $cantidad = $item['cantidad'] ?? 0;
+            $total += $precio * $cantidad;
+        }
+
+        $envio = 2.50;
+
+        return view('pedido.detalles', compact('carrito', 'total', 'envio'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -26,7 +52,6 @@ class PedidoController extends Controller
         return redirect()->route('pedido.finalizar');
     }
 
-    // Muestra los productos disponibles para comida
     public function showPedidoComida()
     {
         $productos = Producto::all();
@@ -43,73 +68,68 @@ class PedidoController extends Controller
         return view('pedido_comida');
     }
 
-    public function pupusas()
+    public function enviarRecibo()
     {
-        $productos = Producto::where('tipo', 'Pupusas')->get();
-        return view('productos.pupusas', compact('productos'));
+        $pdf = Pdf::loadView('pdf.recibo', [
+            'cliente' => 'Juan Pérez',
+            'total' => 12.50
+        ])->output();
+
+        Mail::to('nomelevantoaestudiar@gmail.com')->send(new ReciboMail($pdf));
+
+        return "Recibo enviado";
     }
 
-    public function hamburguesa()
-    {
-        $productos = Producto::where('tipo', 'Hamburguesas')->get();
-        return view('productos.hamburguesas', compact('productos'));
-    }
-
-    public function pollofrito()
-    {
-        $productos = Producto::where('tipo', 'Pollo')->get();
-        return view('productos.pollofrito', compact('productos'));
-    }
-
-    public function hotdog()
-    {
-        $productos = Producto::where('tipo', 'Hot Dog')->get();
-        return view('productos.hotdog', compact('productos'));
-    }
-
-    public function pizza()
-    {
-        $productos = Producto::where('tipo', 'Pizza')->get();
-        return view('productos.pizza', compact('productos'));
-    }
-
-    public function tacos()
-    {
-        $productos = Producto::where('tipo', 'Tacos')->get();
-        return view('productos.tacos', compact('productos'));
-    }
-
-    public function sushi()
-    {
-        $productos = Producto::where('tipo', 'Sushi')->get();
-        return view('productos.sushi', compact('productos'));
-    }
-
-    public function comidachina()
-    {
-        $productos = Producto::where('tipo', 'Comida China')->get();
-        return view('productos.comidachina', compact('productos'));
-    }
-
-    public function arepas()
-    {
-        $productos = Producto::where('tipo', 'Arepas')->get();
-        return view('productos.arepas', compact('productos'));
-    }
+    public function pupusas() { return $this->productoPorTipo('Pupusas', 'productos.pupusas'); }
+    public function hamburguesa() { return $this->productoPorTipo('Hamburguesas', 'productos.hamburguesas'); }
+    public function pollofrito() { return $this->productoPorTipo('Pollo', 'productos.pollofrito'); }
+    public function hotdog() { return $this->productoPorTipo('Hot Dog', 'productos.hotdog'); }
+    public function pizza() { return $this->productoPorTipo('Pizza', 'productos.pizza'); }
+    public function tacos() { return $this->productoPorTipo('Tacos', 'productos.tacos'); }
+    public function sushi() { return $this->productoPorTipo('Sushi', 'productos.sushi'); }
+    public function comidachina() { return $this->productoPorTipo('Comida China', 'productos.comidachina'); }
+    public function arepas() { return $this->productoPorTipo('Arepas', 'productos.arepas'); }
 
     public function bebidas()
     {
         return view('pedido_bebida');
     }
 
-    public function cafeHelado()
-    {
-        $productos = Producto::where('tipo', 'Cafe Helado')->get();
-        return view('productos.cafehelado', compact('productos'));
-    }
+    public function cafeHelado() { return $this->productoPorTipo('Cafe Helado', 'productos.cafehelado'); }
+    public function licuadoDeFresa() { return $this->productoPorTipo('Licuado de fresa', 'productos.licuadodefresa'); }
+    public function jugoNaranja() { return $this->productoPorTipo('Jugo de naranja', 'productos.jugodenaranja'); }
+    public function horchata() { return $this->productoPorTipo('Horchata', 'productos.horchata'); }
+    public function teVerde() { return $this->productoPorTipo('Té Verde Frío', 'productos.teverdefrio'); }
+    public function smoothie() { return $this->productoPorTipo('Smoothie Tropical', 'productos.smoothie'); }
+    public function soda() { return $this->productoPorTipo('Soda de Uva', 'productos.soda'); }
+    public function cafeexpresso() { return $this->productoPorTipo('Café Espresso', 'productos.cafeexpresso'); }
+    public function malteada() { return $this->productoPorTipo('Malteada de Chocolate', 'productos.malteada'); }
 
-    public function cadenas()
+    public function cadenas() { return view('pedido_cadenas'); }
+    public function mcdonalds() { return $this->productoPorTipo("McDonald's", 'productos.mcdonalds'); }
+    public function kfc() { return $this->productoPorTipo('KFC', 'productos.kfc'); }
+    public function burgerking() { return $this->productoPorTipo('Burger King', 'productos.burgerking'); }
+    public function subway() { return $this->productoPorTipo('Subway', 'productos.subway'); }
+    public function pizzahut() { return $this->productoPorTipo('Pizza Hut', 'productos.pizzahut'); }
+    public function dominos() { return $this->productoPorTipo("Domino's Pizza", 'productos.dominos'); }
+    public function tacobell() { return $this->productoPorTipo('Taco Bell', 'productos.tacobell'); }
+    public function popeyes() { return $this->productoPorTipo('Popeyes', 'productos.popeyes'); }
+    public function starbucks() { return $this->productoPorTipo('Starbucks', 'productos.starbucks'); }
+
+    public function otros() { return view('pedido_otros'); }
+    public function gelatinas() { return $this->productoPorTipo('Gelatina', 'productos.gelatina'); }
+    public function flan() { return $this->productoPorTipo('Flan', 'productos.flan'); }
+    public function donas() { return $this->productoPorTipo('Dona', 'productos.dona'); }
+    public function brownies() { return $this->productoPorTipo('Brownie', 'productos.brownies'); }
+    public function tresleches() { return $this->productoPorTipo('Tres Leches', 'productos.tresleches'); }
+    public function cheesecake() { return $this->productoPorTipo('Cheesecake', 'productos.cheesecake'); }
+    public function roll() { return $this->productoPorTipo('Roll de Canela', 'productos.roll'); }
+    public function cupcakes() { return $this->productoPorTipo('Cupcake', 'productos.cupcake'); }
+    public function arroz() { return $this->productoPorTipo('Arroz con Leche', 'productos.arrozleche'); }
+
+    private function productoPorTipo($tipo, $vista)
     {
-        return view('pedido_cadenas');
+        $productos = Producto::where('tipo', $tipo)->get();
+        return view($vista, compact('productos'));
     }
 }

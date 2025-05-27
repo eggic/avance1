@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Productos</title>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body class="bg-light">
 
@@ -33,11 +33,12 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Imagen</th> <!-- Nueva columna -->
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Precio ($)</th>
                         <th>Stock</th>
-                        <th>Tipo</th> <!-- Nueva columna para el tipo -->
+                        <th>Tipo</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -45,13 +46,23 @@
                     @forelse ($productos as $producto)
                         <tr>
                             <td>{{ $producto->id }}</td>
+                            <td>
+                                @if($producto->imagen)
+                                    <img src="{{ asset('storage/' . $producto->imagen) }}" alt="Imagen" width="60" height="60" class="rounded" />
+                                @else
+                                    <span class="text-muted">Sin imagen</span>
+                                @endif
+                            </td>
                             <td>{{ $producto->nombre }}</td>
                             <td>{{ $producto->descripcion }}</td>
                             <td>{{ number_format($producto->precio, 2) }}</td>
                             <td>{{ $producto->stock }}</td>
-                            <td>{{ $producto->tipo }}</td> <!-- Mostrar el tipo -->
+                            <td>{{ $producto->tipo }}</td>
                             <td>
-                                <a href="{{ route('productos.edit', $producto) }}" class="btn btn-warning btn-sm">
+                                <a href="{{ route('productos.show', $producto) }}" class="btn btn-info btn-sm me-1">
+                                    Ver
+                                </a>
+                                <a href="{{ route('productos.edit', $producto) }}" class="btn btn-warning btn-sm me-1">
                                     Editar
                                 </a>
                                 
@@ -66,7 +77,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted">No hay productos registrados.</td>
+                            <td colspan="8" class="text-center text-muted">No hay productos registrados.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -74,7 +85,7 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS (Opcional para algunos componentes como modales o tooltips) -->
+    <!-- Bootstrap JS (opcional para modales o tooltips) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

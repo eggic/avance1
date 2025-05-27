@@ -3,113 +3,110 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificacionController;
+
+// Página principal
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Carrito
+Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
+Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
+Route::post('/carrito/confirmar', [CarritoController::class, 'confirmarPedido'])->name('carrito.confirmar');
 
 
 
+// Pedido
+Route::post('/pedido/realizar', [PedidoController::class, 'realizarPedido'])->name('pedido.realizar');
+Route::get('/pedido/finalizar', [PedidoController::class, 'finalizar'])->name('pedido.finalizar');
+Route::get('/pedido/pago', [PedidoController::class, 'pago'])->name('pedido.pago');
+Route::get('/pedido/ordenar', [PedidoController::class, 'ordenar'])->name('pedido.ordenar');
+Route::post('/pedido/store', [PedidoController::class, 'store'])->name('pedido.store');
+Route::get('/pedido/detalles', [PedidoController::class, 'detalles'])->name('pedido.detalles');
 
+// Categorías generales de pedido
+Route::get('/pedido/comida', [PedidoController::class, 'comida'])->name('pedido.comida');
+Route::get('/pedido/bebidas', [PedidoController::class, 'bebidas'])->name('pedido.bebidas');
+Route::get('/pedido/cadenas', [PedidoController::class, 'cadenas'])->name('pedido.cadenas');
+Route::get('/pedido/otros', [PedidoController::class, 'otros'])->name('pedido.otros');
 
-
-
-// Ruta para la página principal
-Route::get('/', function () {
-    return view('home'); // Carga la vista home.blade.php
-});
-
-Route::post('/logout', function (Request $request) {
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect('/login'); // o donde quieras redirigir
-})->name('logout');
-
-
-
-
-
-Route::get('/pedido-pupusas', [ProductoController::class, 'pedidoPupusas'])->name('productos.pedido_pupusas');
+// Productos (pupusas y hamburguesas)
 Route::get('/productos/pupusas', [ProductoController::class, 'pupusas'])->name('productos.pupusas');
+Route::get('/hamburguesas', [ProductoController::class, 'hamburguesas'])->name('hamburguesas');
+Route::get('/pedido-pupusas', [ProductoController::class, 'pedidoPupusas'])->name('productos.pedido_pupusas');
 
+// Productos
+Route::resource('productos', ProductoController::class);
+
+// Rutas de autenticación
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Roles
+Route::get('/gestor', fn () => view('gestor.dashboard'))->name('gestor.dashboard')->middleware(['auth', 'rol:gestor']);
+Route::get('/empleado', fn () => view('empleado.dashboard'))->name('empleado.dashboard')->middleware(['auth', 'rol:empleado']);
+
+// Perfil
+Route::get('/perfil', fn () => 'Página de Perfil (temporal)')->name('perfil');
+Route::get('/perfil/editar', fn () => 'Editar Perfil (temporal)')->name('perfil.editar');
+
+// Notificaciones
+Route::get('/notificaciones', [NotificacionController::class, 'index'])->name('notificaciones');
+
+// Categorías específicas de comida
 Route::get('/pupusas', [PedidoController::class, 'pupusas'])->name('pupusas');
 Route::get('/hamburguesa', [PedidoController::class, 'hamburguesa'])->name('hamburguesas');
 Route::get('/pollofrito', [PedidoController::class, 'pollofrito'])->name('pollofrito');
-Route::get('/arepas', [PedidoController::class, 'arepa'])->name('arepas');
+Route::get('/arepas', [PedidoController::class, 'arepas'])->name('arepas');
 Route::get('/comidachina', [PedidoController::class, 'comidachina'])->name('comidachina');
 Route::get('/hotdog', [PedidoController::class, 'hotdog'])->name('hotdog');
 Route::get('/pizza', [PedidoController::class, 'pizza'])->name('pizza');
 Route::get('/sushi', [PedidoController::class, 'sushi'])->name('sushi');
 Route::get('/tacos', [PedidoController::class, 'tacos'])->name('tacos');
 
+// Bebidas
+Route::prefix('pedido')->group(function () {
+    Route::get('/cafehelado', [PedidoController::class, 'cafeHelado'])->name('pedido.cafehelado');
+    Route::get('/licuadodefresa', [PedidoController::class, 'licuadoDeFresa'])->name('pedido.licuadodefresa');
+    Route::get('/jugodenaranja', [PedidoController::class, 'jugoNaranja'])->name('pedido.jugodenaranja');
+    Route::get('/horchata', [PedidoController::class, 'horchata'])->name('pedido.horchata');
+    Route::get('/teverdefrio', [PedidoController::class, 'teVerde'])->name('pedido.teverdefrio');
+    Route::get('/smoothie', [PedidoController::class, 'smoothie'])->name('pedido.smoothie');
+    Route::get('/soda', [PedidoController::class, 'soda'])->name('pedido.soda');
+    Route::get('/cafeexpresso', [PedidoController::class, 'cafeexpresso'])->name('pedido.cafeexpresso');
+    Route::get('/malteada', [PedidoController::class, 'malteada'])->name('pedido.malteada');
+});
 
-Route::get('/pedido/cafehelado', [PedidoController::class, 'cafeHelado'])->name('pedido.cafehelado');
-Route::get('/pedido/licuadodefresa', [PedidoController::class, 'licuadodefresa'])->name('pedido.licuadodefresa');
-Route::get('/pedido/jugodenaranja', [PedidoController::class, 'jugodenaranja'])->name('pedido.jugodenaranja');
-Route::get('/pedido/horchata', [PedidoController::class, 'horchata'])->name('pedido.horchata');
-Route::get('/pedido/teverdefrio', [PedidoController::class, 'teverdefrio'])->name('pedido.teverdefrio');
-Route::get('/pedido/smoothie', [PedidoController::class, 'smoothie'])->name('pedido.smoothie');
-Route::get('/pedido/soda', [PedidoController::class, 'soda'])->name('pedido.soda');
-Route::get('/pedido/cafeexpresso', [PedidoController::class, 'cafeexpresso'])->name('pedido.cafeexpresso');
-Route::get('/pedido/malteada', [PedidoController::class, 'malteada'])->name('pedido.malteada');
+// Cadenas de comida rápida
+Route::prefix('pedido')->group(function () {
+    Route::get('/mcdonalds', [PedidoController::class, 'mcdonalds'])->name('pedido.mcdonalds');
+    Route::get('/kfc', [PedidoController::class, 'kfc'])->name('pedido.kfc');
+    Route::get('/burgerking', [PedidoController::class, 'burgerking'])->name('pedido.burgerking');
+    Route::get('/subway', [PedidoController::class, 'subway'])->name('pedido.subway');
+    Route::get('/pizzahut', [PedidoController::class, 'pizzahut'])->name('pedido.pizzahut');
+    Route::get('/dominos', [PedidoController::class, 'dominos'])->name('pedido.dominos');
+    Route::get('/tacobell', [PedidoController::class, 'tacobell'])->name('pedido.tacobell');
+    Route::get('/popeyes', [PedidoController::class, 'popeyes'])->name('pedido.popeyes');
+    Route::get('/starbucks', [PedidoController::class, 'starbucks'])->name('pedido.starbucks');
+});
 
-Route::get('/pedido/mcdonalds', [PedidoController::class, 'mcdonalds'])->name('pedido.mcdonalds');
-Route::get('/pedido/kfc', [PedidoController::class, 'kfc'])->name('pedido.kfc');
-Route::get('/pedido/burgerking', [PedidoController::class, 'burgerking'])->name('pedido.burgerking');
-Route::get('/pedido/subway', [PedidoController::class, 'subway'])->name('pedido.subway');
-Route::get('/pedido/pizzahut', [PedidoController::class, 'pizzahut'])->name('pedido.pizzahut');
-Route::get('/pedido/dominos', [PedidoController::class, 'dominos'])->name('pedido.dominos');
-Route::get('/pedido/tacobell', [PedidoController::class, 'tacobell'])->name('pedido.tacobell');
-Route::get('/pedido/popeyes', [PedidoController::class, 'popeyes'])->name('pedido.popeyes');
-Route::get('/pedido/starbucks', [PedidoController::class, 'starbucks'])->name('pedido.starbucks');
+// Postres
+Route::prefix('pedido')->group(function () {
+    Route::get('/gelatina', [PedidoController::class, 'gelatinas'])->name('pedido.gelatinas');
+    Route::get('/flan', [PedidoController::class, 'flan'])->name('pedido.flan');
+    Route::get('/donas', [PedidoController::class, 'donas'])->name('pedido.donas');
+    Route::get('/brownies', [PedidoController::class, 'brownies'])->name('pedido.brownies');
+    Route::get('/tresleches', [PedidoController::class, 'tresleches'])->name('pedido.tresleches');
+    Route::get('/cheesecake', [PedidoController::class, 'cheesecake'])->name('pedido.cheesecake');
+    Route::get('/roll', [PedidoController::class, 'roll'])->name('pedido.roll');
+    Route::get('/cupcakes', [PedidoController::class, 'cupcakes'])->name('pedido.cupcakes');
+    Route::get('/arroz', [PedidoController::class, 'arroz'])->name('pedido.arroz');
+});
 
-
-Route::get('/productos', [ProductoController::class, 'index'])->name('productos.index');
-Route::get('/productos/crear', [ProductoController::class, 'create'])->name('productos.create');
-Route::post('/productos', [ProductoController::class, 'store'])->name('productos.store');
-Route::get('/productos/{producto}/editar', [ProductoController::class, 'edit'])->name('productos.edit');
-Route::put('/productos/{id}', [ProductoController::class, 'update'])->name('productos.update');
-Route::delete('/productos/{producto}', [ProductoController::class, 'destroy'])->name('productos.destroy');
-
-Route::get('/productos/pupusas', [ProductoController::class, 'pupusas'])->name('productos.pupusas');
-Route::get('/hamburguesas', [ProductoController::class, 'hamburguesas'])->name('hamburguesas');
-
-
-
-
-
-Route::get('/pedido', [App\Http\Controllers\PedidoController::class, 'ver'])
-    ->name('pedido.ver');
-
-// Rutas para hacer un pedido según la categoría
-Route::get('/pedido/comida', [PedidoController::class, 'comida'])->name('pedido.comida');
-Route::get('/pedido/bebidas', [PedidoController::class, 'bebidas'])->name('pedido.bebidas');
-Route::get('/pedido/cadenas', [PedidoController::class, 'cadenas'])->name('pedido.cadenas');
-Route::get('/pedido/otros', [PedidoController::class, 'otros'])->name('pedido.otros');
-
-Route::get('/', function () {
-    return view('home');
-})->name('home');   
-
-
-Route::get('/pedido-bebida', function () {
-    return view('pedido_bebida');
-})->name('pedido.bebida');
-
-
-Route::get('/pedido-cadenas', function () {
-    return view('pedido_cadenas');
-})->name('pedido.cadenas');
-
-
-
-// Ruta para finalizar el pedido
-Route::get('/pedido/finalizar', [PedidoController::class, 'finalizar'])->name('pedido.finalizar');
-
-// Ruta para la página de pago (opcional)
-Route::get('/pedido/pago', [PedidoController::class, 'pago'])->name('pedido.pago');
-
-
-// Rutas para los productos con CRUD
-Route::resource('productos', ProductoController::class);
-
-Route::get('/pedido/ordenar', [PedidoController::class, 'ordenar'])->name('pedido.ordenar');  // Ruta para la vista de ordenar comida
-Route::post('/pedido/store', [PedidoController::class, 'store'])->name('pedido.store');  // Ruta para almacenar el pedido en el carrito
-Route::get('/pedido/finalizar', [PedidoController::class, 'finalizar'])->name('pedido.finalizar');  // Ruta para finalizar el pedido
+// Recibo
+Route::get('/recibo', [PedidoController::class, 'enviarRecibo'])->name('pedido.recibo');
