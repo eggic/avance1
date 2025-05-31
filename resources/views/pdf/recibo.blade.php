@@ -1,20 +1,20 @@
+<!-- resources/views/pdf/recibo.blade.php -->
+
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Recibo</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        h1 { color: #333; }
-        .total { font-weight: bold; margin-top: 20px; }
-    </style>
+    <title>Recibo de Pedido #{{ $pedido->id }}</title>
 </head>
 <body>
-    <h1>Recibo de Compra</h1>
+    <h1>Recibo de tu pedido #{{ $pedido->id }}</h1>
+    <p>Fecha: {{ $pedido->fecha_pedido }}</p>
+    <p>Total: ${{ number_format($pedido->total, 2) }}</p>
 
-    <p>Cliente: {{ $cliente }}</p>
-    <p>Total a pagar: ${{ number_format($total, 2) }}</p>
-
-    <p>Gracias por tu compra.</p>
+    <h2>Detalles</h2>
+    <ul>
+        @foreach ($pedido->detalles as $detalle)
+            <li>{{ $detalle->producto->nombre }} - Cantidad: {{ $detalle->cantidad }} - Precio unitario: ${{ number_format($detalle->precio_unitario, 2) }}</li>
+        @endforeach
+    </ul>
 </body>
 </html>

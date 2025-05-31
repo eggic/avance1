@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Menú de Comidas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .btn-pink {
+            background-color: #e91e63; /* rosa fuerte */
+            color: white;
+            border-color: #e91e63;
+        }
+        .btn-pink:hover, 
+        .btn-pink:focus {
+            background-color: #c2185b;
+            border-color: #c2185b;
+            color: white;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
@@ -32,14 +45,14 @@
             @foreach ($comidas as $comida)
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-sm h-100">
-                        <img src="{{ $comida['img'] }}" class="card-img-top" alt="{{ $comida['nombre'] }}" style="height: 250px; object-fit: cover;">
+                        <img src="{{ $comida['img'] }}" class="card-img-top" alt="{{ $comida['nombre'] }}" style="height: 250px; object-fit: cover;" />
                         <div class="card-body d-flex flex-column justify-content-between">
                             <div>
                                 <h5 class="card-title">{{ $comida['nombre'] }}</h5>
                                 <p class="card-text">{{ $comida['desc'] }}</p>
                             </div>
                             <div class="text-center mt-3">
-                                <a href="{{ $comida['ruta'] }}" class="btn btn-primary">Hacer pedido</a>
+                                <a href="{{ $comida['ruta'] }}" class="btn btn-pink">Hacer pedido</a>
                             </div>
                         </div>
                     </div>

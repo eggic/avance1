@@ -13,13 +13,16 @@ return new class extends Migration
 {
     Schema::create('pedidos', function (Blueprint $table) {
         $table->id();
-        $table->string('cliente')->nullable(); // o user_id si hay login
-        $table->decimal('total', 10, 2);
+        $table->unsignedBigInteger('usuario_id')->nullable();
+        $table->dateTime('fecha_pedido');
         $table->string('estado')->default('pendiente');
+        $table->decimal('total', 10, 2);
         $table->timestamps();
+
+        // Si tienes tabla usuarios, puedes poner la relación así:
+        // $table->foreign('usuario_id')->references('id')->on('users')->onDelete('set null');
     });
 }
-
 
 
     /**

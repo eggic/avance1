@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Menú de Comidas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .btn-pink {
+            background-color: #e91e63; /* rosa fuerte */
+            color: white;
+            border-color: #e91e63;
+        }
+        .btn-pink:hover,
+        .btn-pink:focus {
+            background-color: #c2185b;
+            border-color: #c2185b;
+            color: white;
+        }
+    </style>
 </head>
 <body class="bg-light">
     {{-- Incluir el navbar --}}
@@ -35,7 +48,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ $comida['nombre'] }}</h5>
                             <p class="card-text">{{ $comida['desc'] }}</p>
-                            <a href="{{ $comida['ruta'] }}" class="btn btn-success">Agregar al pedido</a>
+                            <a href="{{ $comida['ruta'] }}" class="btn btn-pink">Agregar al pedido</a>
                         </div>
                     </div>
                 </div>

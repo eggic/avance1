@@ -3,11 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido a Nuestro Menú</title>
+    <title>Inicio</title>
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Estilos personalizados -->
     <link href="{{ asset('css/home.css') }}" rel="stylesheet">
+
+    <style>
+        .btn-pedido {
+            background-color: #ec5ca8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-pedido:hover {
+            background-color: #d94e96;
+            color: white;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
@@ -34,7 +50,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Comida</h5>
                         <p class="card-text">Disfruta de nuestras deliciosas opciones de comida.</p>
-                        <a href="{{ route('pedido.comida') }}" class="btn btn-primary">Haz tu pedido</a>
+                        <a href="{{ route('pedido.comida') }}" class="btn btn-pedido">Haz tu pedido</a>
                     </div>
                 </div>
             </div>
@@ -46,7 +62,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Bebidas</h5>
                         <p class="card-text">Refresca tu día con nuestras bebidas deliciosas.</p>
-                        <a href="{{ route('pedido.bebidas') }}" class="btn btn-primary">Haz tu pedido</a>
+                        <a href="{{ route('pedido.bebidas') }}" class="btn btn-pedido">Haz tu pedido</a>
                     </div>
                 </div>
             </div>
@@ -58,7 +74,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Cadenas de comida</h5>
                         <p class="card-text">Encuentra las mejores cadenas de comida cerca de ti.</p>
-                        <a href="{{ route('pedido.cadenas') }}" class="btn btn-primary">Haz tu pedido</a>
+                        <a href="{{ route('pedido.cadenas') }}" class="btn btn-pedido">Haz tu pedido</a>
                     </div>
                 </div>
             </div>
@@ -70,19 +86,14 @@
                     <div class="card-body">
                         <h5 class="card-title">Otros</h5>
                         <p class="card-text">Explora otras opciones deliciosas y únicas.</p>
-                        <a href="{{ route('pedido.otros') }}" class="btn btn-primary">Haz tu pedido</a>
+                        <a href="{{ route('pedido.otros') }}" class="btn btn-pedido">Haz tu pedido</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3">
-        <p>&copy; 2025 Todos los derechos reservados.</p>
-    </footer>
-
-    <!-- Bootstrap JS (Opcional para algunos componentes como modales o tooltips) -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

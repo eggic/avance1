@@ -6,14 +6,13 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ReciboMail;
+use App\Mail\ReciboPedidoMailable;
+use App\Models\Pedido;
 use App\Models\Producto;
+
 
 class PedidoController extends Controller
 {
-    public function ver()
-    {
-        return view('pedido.ver');
-    }
 
     public function realizarPedido(Request $request)
     {
@@ -23,22 +22,6 @@ class PedidoController extends Controller
     public function ordenar()
     {
         return view('orden');
-    }
-
-    public function detalles()
-    {
-        $carrito = session('carrito', []);
-
-        $total = 0;
-        foreach ($carrito as $item) {
-            $precio = $item['precio'] ?? 0;
-            $cantidad = $item['cantidad'] ?? 0;
-            $total += $precio * $cantidad;
-        }
-
-        $envio = 2.50;
-
-        return view('pedido.detalles', compact('carrito', 'total', 'envio'));
     }
 
     public function store(Request $request)
@@ -68,17 +51,18 @@ class PedidoController extends Controller
         return view('pedido_comida');
     }
 
-    public function enviarRecibo()
-    {
-        $pdf = Pdf::loadView('pdf.recibo', [
-            'cliente' => 'Juan Pérez',
-            'total' => 12.50
-        ])->output();
+    public function enviarRecibo($idPedido)
+{
+    $pedido = Pedido::find($idPedido);
 
-        Mail::to('nomelevantoaestudiar@gmail.com')->send(new ReciboMail($pdf));
-
-        return "Recibo enviado";
+    if (!$pedido) {
+        return "Pedido no encontrado.";
     }
+
+    Mail::to('cliente@example.com')->send(new ReciboPedidoMailable($pedido));
+
+    return "Recibo enviado.";
+}
 
     public function pupusas() { return $this->productoPorTipo('Pupusas', 'productos.pupusas'); }
     public function hamburguesa() { return $this->productoPorTipo('Hamburguesas', 'productos.hamburguesas'); }
